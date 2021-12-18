@@ -8,6 +8,8 @@ public class BottomlessBuckets extends JavaPlugin {
     public void onEnable() {
         getLogger().info("Enabled");
         getServer().getPluginManager().registerEvents(new BucketListener(), this);
+        getServer().getPluginManager().registerEvents(new BucketSwitchListener(), this);
+
     }
 
     @Override
