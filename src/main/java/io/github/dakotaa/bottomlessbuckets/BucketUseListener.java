@@ -1,5 +1,7 @@
 package io.github.dakotaa.bottomlessbuckets;
 
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,24 +18,30 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-public class BucketListener implements Listener {
+public class BucketUseListener implements Listener {
 
-    private static final String BUCKET_DISPLAY_NAME = ChatColor.AQUA + "Bottomless Bucket";
+    public static final String BUCKET_DISPLAY_NAME = ChatColor.AQUA + "Bottomless Bucket";
 
     @EventHandler
     public void onBucketFillEvent(PlayerBucketFillEvent e) {
-        Logger l = Bukkit.getLogger();
         Player p = e.getPlayer();
 
         // get the item in the player's hand
         // TODO: Make this work for buckets in the off-hand
         ItemStack item = p.getInventory().getItemInMainHand();
+
         if (item.getType() != Material.BUCKET) return;
 
         ItemMeta meta = item.getItemMeta();
         if (meta != null && meta.hasDisplayName()) {
             // TODO: Configurable bucket name
             if (!meta.getDisplayName().equals(BUCKET_DISPLAY_NAME)) return;
+
+            if (item.getAmount() != 1) {
+                p.sendMessage("stacked-bucket-fill");
+                e.setCancelled(true);
+                return;
+            }
 
             // check the lore of the item, return if lore is empty
             List<String> lore = meta.getLore();
@@ -91,6 +99,9 @@ public class BucketListener implements Listener {
             lore.set(amountLine, ChatColor.translateAlternateColorCodes('&', "&7Amount: &f" + newAmount));
             meta.setLore(lore);
             item.setItemMeta(meta);
+
+            // send the user an actionbar message with the new bucket amount
+            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(newAmount + "/" + capacity));
 
             // give the player the updated item instead of a water bucket
             e.setItemStack(item);
@@ -154,6 +165,9 @@ public class BucketListener implements Listener {
             lore.set(amountLine, ChatColor.translateAlternateColorCodes('&', "&7Amount: &f" + newAmount));
             meta.setLore(lore);
             item.setItemMeta(meta);
+
+            // send the user an actionbar message with the new bucket amount
+            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(newAmount + "/" + capacity));
 
             // give the player the updated item instead of a water bucket
             e.setItemStack(item);
