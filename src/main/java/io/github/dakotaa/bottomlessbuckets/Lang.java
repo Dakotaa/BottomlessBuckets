@@ -53,8 +53,6 @@ public enum Lang {
         String value = ChatColor.translateAlternateColorCodes('&',
                 LANG.getString(this.path, this.def));
 
-        Bukkit.getLogger().info(value);
-
         if (args == null)
             return value;
         else {

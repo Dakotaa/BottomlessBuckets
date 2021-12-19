@@ -6,21 +6,23 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BottomlessBuckets extends JavaPlugin {
-
+    public static BottomlessBuckets plugin;
     private ConfigWrapper langFile = new ConfigWrapper(this, "", "lang.yml");
     private FileConfiguration config = getConfig();
 
     @Override
     public void onEnable() {
+        plugin = this;
+
         saveDefaultConfig();
 
-        getLogger().info("Enabled");
         getServer().getPluginManager().registerEvents(new BucketUseListener(), this);
         getServer().getPluginManager().registerEvents(new BucketSwitchListener(), this);
 
         langFile.createNewFile("Loading BottomlessBuckets lang.yml", "BottomlessBuckets lang file");
         loadLang();
 
+        getLogger().info("Enabled");
     }
 
     private void loadLang() {

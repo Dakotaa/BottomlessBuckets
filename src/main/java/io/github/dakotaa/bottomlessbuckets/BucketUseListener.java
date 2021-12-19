@@ -5,7 +5,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,7 +14,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 public class BucketUseListener implements Listener {
@@ -107,9 +105,10 @@ public class BucketUseListener implements Listener {
             e.setItemStack(item);
 
             if (newAmount == capacity) {
-                p.sendMessage("switching");
-                ItemStack newBucket = BucketSwitchListener.switchBucket(p, true);
-                if (newBucket != null) e.setItemStack(newBucket);
+                if (BottomlessBuckets.plugin.getConfig().getBoolean("autoSwitchMode")) {
+                    ItemStack newBucket = BucketSwitchListener.switchBucket(p);
+                    if (newBucket != null) e.setItemStack(newBucket);
+                }
             }
         }
     }
@@ -185,8 +184,10 @@ public class BucketUseListener implements Listener {
             e.setItemStack(item);
 
             if (newAmount == 0) {
-                ItemStack newBucket = BucketSwitchListener.switchBucket(p, true);
-                if (newBucket != null) e.setItemStack(newBucket);
+                if (BottomlessBuckets.plugin.getConfig().getBoolean("autoSwitchMode")) {
+                    ItemStack newBucket = BucketSwitchListener.switchBucket(p);
+                    if (newBucket != null) e.setItemStack(newBucket);
+                }
             }
         }
     }

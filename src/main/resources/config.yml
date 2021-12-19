@@ -1,2 +1,7 @@
 # whether an action bar message should be displayed with the new amount when filling/emptying a bucket
 actionBarMessage: true
+# whether the bucket's mode should be switched automatically once the bucket is full/empty
+autoSwitchMode: true
+sounds:
+  # whether to play the sound effect when the player switches bucket modes (item frame pop sound)
+  enableModeSwitchSound: true

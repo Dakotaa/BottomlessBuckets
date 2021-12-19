@@ -2,6 +2,7 @@ package io.github.dakotaa.bottomlessbuckets;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,7 +31,7 @@ public class BucketSwitchListener implements Listener {
 
         e.setCancelled(true);
 
-        switchBucket(p, false);
+        switchBucket(p);
     }
 
     /**
@@ -38,7 +39,7 @@ public class BucketSwitchListener implements Listener {
      * @param p the player whose tool will be checked
      * @param auto whether this switch is automatic (when player fills/empties bucket)
      */
-    public static ItemStack switchBucket(Player p, boolean auto) {
+    public static ItemStack switchBucket(Player p) {
         // get mode and type of the bucket
         // TODO: Configurable bucket lore lines
         // get player's equipped item
@@ -100,7 +101,10 @@ public class BucketSwitchListener implements Listener {
             lore.set(modeLine, ChatColor.translateAlternateColorCodes('&', "&7Mode: &fPlace"));
         }
 
-        // TODO switch sound effect
+        // TODO configurable sound
+        if (BottomlessBuckets.plugin.getConfig().getBoolean("sounds.enableModeSwitchSound")) {
+            p.playSound(p.getLocation(), Sound.ENTITY_ITEM_FRAME_REMOVE_ITEM, 0.5f, 1.3f);
+        }
         // update the item lore and give the item to the player
         meta.setLore(lore);
         item.setItemMeta(meta);
