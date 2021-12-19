@@ -105,6 +105,12 @@ public class BucketUseListener implements Listener {
 
             // give the player the updated item instead of a water bucket
             e.setItemStack(item);
+
+            if (newAmount == capacity) {
+                p.sendMessage("switching");
+                ItemStack newBucket = BucketSwitchListener.switchBucket(p, true);
+                if (newBucket != null) e.setItemStack(newBucket);
+            }
         }
     }
 
@@ -126,6 +132,12 @@ public class BucketUseListener implements Listener {
         if (meta != null && meta.hasDisplayName()) {
             // TODO: Configurable bucket name
             if (!meta.getDisplayName().equals(BUCKET_DISPLAY_NAME)) return;
+
+            if (item.getAmount() != 1) {
+                p.sendMessage("stacked-bucket-place");
+                e.setCancelled(true);
+                return;
+            }
 
             // check the lore of the item, return if lore is empty
             List<String> lore = meta.getLore();
@@ -171,6 +183,11 @@ public class BucketUseListener implements Listener {
 
             // give the player the updated item instead of a water bucket
             e.setItemStack(item);
+
+            if (newAmount == 0) {
+                ItemStack newBucket = BucketSwitchListener.switchBucket(p, true);
+                if (newBucket != null) e.setItemStack(newBucket);
+            }
         }
     }
 }
