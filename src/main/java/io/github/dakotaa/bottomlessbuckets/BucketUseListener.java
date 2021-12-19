@@ -38,7 +38,7 @@ public class BucketUseListener implements Listener {
             if (!meta.getDisplayName().equals(BUCKET_DISPLAY_NAME)) return;
 
             if (item.getAmount() != 1) {
-                p.sendMessage("stacked-bucket-fill");
+                p.sendMessage(Lang.STACKED_FILL.getConfigValue(null));
                 e.setCancelled(true);
                 return;
             }
@@ -77,7 +77,7 @@ public class BucketUseListener implements Listener {
             // ensure the liquid type matches the bucket type
             if (!e.getBlock().getType().equals(type)) {
                 // TODO Message player error
-                p.sendMessage("wrong-type");
+                p.sendMessage(Lang.WRONG_TYPE.getConfigValue(null));
                 e.setCancelled(true);
                 return;
             }
@@ -88,7 +88,7 @@ public class BucketUseListener implements Listener {
             // check for bucket at/above capacity
             if (amount >= capacity) {
                 e.setCancelled(true);
-                p.sendMessage("bucket-full");
+                p.sendMessage(Lang.BUCKET_FULL.getConfigValue(null));
                 return;
             }
 
@@ -134,7 +134,7 @@ public class BucketUseListener implements Listener {
             if (!meta.getDisplayName().equals(BUCKET_DISPLAY_NAME)) return;
 
             if (item.getAmount() != 1) {
-                p.sendMessage("stacked-bucket-place");
+                p.sendMessage(Lang.STACKED_PLACE.getConfigValue(null));
                 e.setCancelled(true);
                 return;
             }
@@ -166,7 +166,7 @@ public class BucketUseListener implements Listener {
             // check for empty bucket
             if (amount <= 0) {
                 e.setCancelled(true);
-                p.sendMessage("bucket-empty");
+                p.sendMessage(Lang.BUCKET_EMPTY.getConfigValue(null));
                 return;
             }
 

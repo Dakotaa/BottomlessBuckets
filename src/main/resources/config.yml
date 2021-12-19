@@ -1,0 +1,2 @@
+# whether an action bar message should be displayed with the new amount when filling/emptying a bucket
+actionBarMessage: true

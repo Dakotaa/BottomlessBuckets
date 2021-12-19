@@ -1,20 +1,15 @@
 package io.github.dakotaa.bottomlessbuckets;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 public class BucketSwitchListener implements Listener {
 
@@ -58,22 +53,13 @@ public class BucketSwitchListener implements Listener {
         if (!meta.getDisplayName().equals(BucketUseListener.BUCKET_DISPLAY_NAME)) return null;
         // do not allow swapping stacked buckets
         if (item.getAmount() != 1) {
-            p.sendMessage("stacked-bucket-swap");
+            p.sendMessage(Lang.STACKED_CHANGE_MODE.getConfigValue(null));
             return null;
         }
 
         // get item lore
         List<String> lore = meta.getLore();
         if (lore == null || lore.size() == 0) return null;
-
-        // check if water is in the player's line of sight, since filling the bucket will sometimes call
-        // the interact event and cause the bucket to swtich
-        if (!auto) {
-            List<Block> los = p.getLineOfSight(null, 6);
-            for (Block b : los) {
-                if (b.getType().equals(Material.WATER) || b.getType().equals(Material.LAVA)) return null;
-            }
-        }
 
         // get the item lore
         int modeLine = -1;
@@ -103,15 +89,14 @@ public class BucketSwitchListener implements Listener {
         // no bucket type was found
         if (bucketType == null) return null;
 
-        // TODO player messages
         // switch bucket item depending on mode
         if (mode.equals("place")) {
-            p.sendMessage("switch-fill");
+            p.sendMessage(Lang.SWITCH_FILL.getConfigValue(null));
             item.setType(Material.BUCKET);
             lore.set(modeLine, ChatColor.translateAlternateColorCodes('&', "&7Mode: &fFill"));
         } else {
             item.setType(bucketType);
-            p.sendMessage("switch-place");
+            p.sendMessage(Lang.SWITCH_PLACE.getConfigValue(null));
             lore.set(modeLine, ChatColor.translateAlternateColorCodes('&', "&7Mode: &fPlace"));
         }
 
