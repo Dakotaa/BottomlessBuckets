@@ -2,19 +2,18 @@ package io.github.dakotaa.bottomlessbuckets;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 public class BucketUseListener implements Listener {
 
@@ -23,47 +22,72 @@ public class BucketUseListener implements Listener {
     @EventHandler
     public void onBucketFillEvent(PlayerBucketFillEvent e) {
         Player p = e.getPlayer();
-
-        // get the item in the player's hand
-        // TODO: Make this work for buckets in the off-hand
         ItemStack item = p.getInventory().getItemInMainHand();
+        updateBucket(item, "fill", p, e);
+    }
 
-        if (item.getType() != Material.BUCKET) return;
+    @EventHandler
+    public void onBucketEmptyEvent(PlayerBucketEmptyEvent e) {
+        Player p = e.getPlayer();
+        ItemStack item = p.getInventory().getItemInMainHand();
+        updateBucket(item, "empty", p, e);
+    }
 
+    /**
+     * Updates the player's Bottomless Bucket item when they fill the bucket or place it. Overwrites the item resulting
+     * from the PlayerBucketEvent to update the amount in the player's bucket.
+     * @param item the bucket item to update
+     * @param mode the bucket mode, either "fill" or "empty"
+     * @param p the player using the bucket
+     * @param e a PlayerBucketEvent
+     */
+    public void updateBucket(ItemStack item, String mode, Player p, PlayerBucketEvent e) {
         ItemMeta meta = item.getItemMeta();
         if (meta != null && meta.hasDisplayName()) {
-            // TODO: Configurable bucket name
-            if (!meta.getDisplayName().equals(BUCKET_DISPLAY_NAME)) return;
+            if (!meta.getDisplayName().equals(BottomlessBuckets.getColouredConfigValue("bucket-item.name"))) return;
 
+            // player attempting to fill/empty a stacked bucket
             if (item.getAmount() != 1) {
-                p.sendMessage(Lang.STACKED_FILL.getConfigValue(null));
+                if (mode.equals("fill")) {
+                    p.sendMessage(Lang.STACKED_FILL.getConfigValue(null));
+                } else {
+                    p.sendMessage(Lang.STACKED_PLACE.getConfigValue(null));
+                }
                 e.setCancelled(true);
                 return;
             }
 
-            // check the lore of the item, return if lore is empty
+            // update the lore of the bucket to change the amount
             List<String> lore = meta.getLore();
+
             if (lore == null || lore.size() == 0) return;
 
             // lore line indices for the fill amount and capacity of this bucket
-            // TODO: Configurable bucket lore lines
+            // get the required config values to compare this bucket to the configured bottomless bucket
+            String typeLabel = BottomlessBuckets.getColouredConfigValue("bucket-item.lore.type.label");
+            String typeWater = BottomlessBuckets.getColouredConfigValue("bucket-item.lore.type.water");
+            String typeLava = BottomlessBuckets.getColouredConfigValue("bucket-item.lore.type.lava");
+            String amountLabel = BottomlessBuckets.getColouredConfigValue("bucket-item.lore.amount.label");
+            String capacityLabel = BottomlessBuckets.getColouredConfigValue("bucket-item.lore.capacity.label");
             int amount = -1, amountLine = -1, capacity = -1, capacityLine = -1;
             Material type = null;
             for (int i = 0; i < lore.size(); i++) {
                 String s = lore.get(i);
                 // get the type of bucket
-                if (s.contains("Water")) {
-                    type = Material.WATER;
-                } else if (s.contains("Lava")) {
-                    type = Material.LAVA;
+                if (s.contains(typeLabel)) {
+                    if (s.contains(typeWater)) {
+                        type = Material.WATER;
+                    } else if (s.contains(typeLava)) {
+                        type = Material.LAVA;
+                    } else return;
                 }
                 // get the amount currently in the bucket
-                if (s.contains("Amount")) {
+                if (s.contains(amountLabel)) {
                     amountLine = i;
                     amount = Integer.parseInt(ChatColor.stripColor(s).replaceAll("[^0-9]", ""));
                 }
                 // get the capacity of the bucket
-                if (s.contains("Capacity")) {
+                if (s.contains(capacityLabel)) {
                     capacityLine = i;
                     capacity = Integer.parseInt(ChatColor.stripColor(s).replaceAll("[^0-9]", ""));
                 }
@@ -72,118 +96,63 @@ public class BucketUseListener implements Listener {
             // ensure the bucket has a type
             if (type == null) return;
 
-            // ensure the liquid type matches the bucket type
-            if (!e.getBlock().getType().equals(type)) {
-                // TODO Message player error
-                p.sendMessage(Lang.WRONG_TYPE.getConfigValue(null));
-                e.setCancelled(true);
-                return;
-            }
-
-            // ensure all values were set
-            if (amount == -1 || amountLine == -1 || capacity == -1 || capacityLine == -1) return;
-
-            // check for bucket at/above capacity
-            if (amount >= capacity) {
-                e.setCancelled(true);
-                p.sendMessage(Lang.BUCKET_FULL.getConfigValue(null));
-                return;
-            }
-
-            // TODO: Configurable amount per bucket fill
-            int newAmount = amount + 1;
-
-            // update the amount lore line with the new amount
-            lore.set(amountLine, ChatColor.translateAlternateColorCodes('&', "&7Amount: &f" + newAmount));
-            meta.setLore(lore);
-            item.setItemMeta(meta);
-
-            // send the user an actionbar message with the new bucket amount
-            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(newAmount + "/" + capacity));
-
-            // give the player the updated item instead of a water bucket
-            e.setItemStack(item);
-
-            if (newAmount == capacity) {
-                if (BottomlessBuckets.plugin.getConfig().getBoolean("autoSwitchMode")) {
-                    ItemStack newBucket = BucketSwitchListener.switchBucket(p);
-                    if (newBucket != null) e.setItemStack(newBucket);
-                }
-            }
-        }
-    }
-
-    @EventHandler
-    public void onBucketEmptyEvent(PlayerBucketEmptyEvent e) {
-        Logger l = Bukkit.getLogger();
-        Player p = e.getPlayer();
-
-        // get the item in the player's hand
-        // TODO: Make this work for buckets in the off-hand
-        ItemStack item = p.getInventory().getItemInMainHand();
-
-
-        if (item.getType() != Material.LAVA_BUCKET && item.getType() != Material.WATER_BUCKET) return;
-
-        l.info(item.toString());
-
-        ItemMeta meta = item.getItemMeta();
-        if (meta != null && meta.hasDisplayName()) {
-            // TODO: Configurable bucket name
-            if (!meta.getDisplayName().equals(BUCKET_DISPLAY_NAME)) return;
-
-            if (item.getAmount() != 1) {
-                p.sendMessage(Lang.STACKED_PLACE.getConfigValue(null));
-                e.setCancelled(true);
-                return;
-            }
-
-            // check the lore of the item, return if lore is empty
-            List<String> lore = meta.getLore();
-            if (lore == null || lore.size() == 0) return;
-
-            // lore line indices for the fill amount and capacity of this bucket
-            // TODO: Configurable bucket lore lines
-            int amount = -1, amountLine = -1, capacity = -1, capacityLine = -1;
-            for (int i = 0; i < lore.size(); i++) {
-                String s = lore.get(i);
-                // get the amount currently in the bucket
-                if (s.contains("Amount")) {
-                    amountLine = i;
-                    amount = Integer.parseInt(ChatColor.stripColor(s).replaceAll("[^0-9]", ""));
-                }
-                // get the capacity of the bucket
-                if (s.contains("Capacity")) {
-                    capacityLine = i;
-                    capacity = Integer.parseInt(ChatColor.stripColor(s).replaceAll("[^0-9]", ""));
+            // ensure the liquid type matches the bucket type when filling
+            if (mode.equals("fill")) {
+                if (!e.getBlock().getType().equals(type)) {
+                    p.sendMessage(Lang.WRONG_TYPE.getConfigValue(null));
+                    e.setCancelled(true);
+                    return;
                 }
             }
 
             // ensure all values were set
             if (amount == -1 || amountLine == -1 || capacity == -1 || capacityLine == -1) return;
 
-            // check for empty bucket
-            if (amount <= 0) {
-                e.setCancelled(true);
-                p.sendMessage(Lang.BUCKET_EMPTY.getConfigValue(null));
-                return;
+            // check for bucket empty/at capacity
+            if (mode.equals("fill")) {
+                if (amount >= capacity) {
+                    e.setCancelled(true);
+                    p.sendMessage(Lang.BUCKET_FULL.getConfigValue(null));
+                    return;
+                }
+            } else {
+                if (amount <= 0) {
+                    e.setCancelled(true);
+                    p.sendMessage(Lang.BUCKET_EMPTY.getConfigValue(null));
+                    return;
+                }
             }
 
+            int newAmount;
             // TODO: Configurable amount per bucket fill
-            int newAmount = amount - 1;
+            if (mode.equals("fill")) {
+                newAmount = amount + 1;
+            } else {
+                newAmount = amount - 1;
+            }
+
+            // get the formatting for the mode lore from the config
+            String configLore = ChatColor.translateAlternateColorCodes('&',
+                    (String) BottomlessBuckets.plugin.getConfig().getList("bucket-item.lore.lines").get(amountLine))
+                    .replace("%amount-label%", amountLabel)
+                    .replace("%amount-value%", String.valueOf(newAmount));
 
             // update the amount lore line with the new amount
-            lore.set(amountLine, ChatColor.translateAlternateColorCodes('&', "&7Amount: &f" + newAmount));
+            lore.set(amountLine, configLore);
+            // update the lore of the item meta, apply it to the item
             meta.setLore(lore);
             item.setItemMeta(meta);
 
             // send the user an actionbar message with the new bucket amount
-            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(newAmount + "/" + capacity));
+            if (BottomlessBuckets.plugin.getConfig().getBoolean("actionBarMessage")) {
+                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(newAmount + "/" + capacity));
+            }
 
-            // give the player the updated item instead of a water bucket
+            // give the player the updated item
             e.setItemStack(item);
 
-            if (newAmount == 0) {
+            // auto switch bucket mode if bucket is now at capacity or empty
+            if (newAmount == capacity || newAmount == 0) {
                 if (BottomlessBuckets.plugin.getConfig().getBoolean("autoSwitchMode")) {
                     ItemStack newBucket = BucketSwitchListener.switchBucket(p);
                     if (newBucket != null) e.setItemStack(newBucket);

@@ -2,6 +2,38 @@
 actionBarMessage: true
 # whether the bucket's mode should be switched automatically once the bucket is full/empty
 autoSwitchMode: true
+# settings for the bottomless bucket item
+bucket-item:
+  name: '&bBottomless Bucket'
+  lore:
+    # formatting for the bucket type
+    type:
+      label: '&7Type'
+      water: '&1Water'
+      lava: '&6Lava'
+    # formatting for the amount of liquid in the bucket
+    amount:
+      label: '&7Amount'
+    # formatting for the maximum capacity of the bucket
+    capacity:
+      label: '&7Capacity'
+    mode:
+      label: '&7Mode'
+      fill: '&fFill'
+      place: '&fPlace'
+    # formatting for the lore lines of the bucket
+    # !!!! MUST CONTAIN THESE PLACEHOLDERS IN ORDER TO WORK !!!!
+    # each set of placeholders must be present and together on their own line
+    #   %type-label% %type-value%
+    #   %amount-label% %amount-value%
+    #   %capacity-label% %capacity-value%
+    #   %mode-label% %mode-value%
+    lines:
+      - '%type-label%: %type-value%'
+      - '%amount-label%: &f%amount-value%'
+      - '%capacity-label%: &f%capacity-value%'
+      - ''
+      - '%mode-label%: &f%mode-value%'
 sounds:
   # whether to play the sound effect when the player switches bucket modes (item frame pop sound)
   enableModeSwitchSound: true

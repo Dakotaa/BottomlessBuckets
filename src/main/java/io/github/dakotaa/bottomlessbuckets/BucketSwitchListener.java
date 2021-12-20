@@ -3,6 +3,7 @@ package io.github.dakotaa.bottomlessbuckets;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
+import java.util.Objects;
 
 public class BucketSwitchListener implements Listener {
 
@@ -37,9 +39,10 @@ public class BucketSwitchListener implements Listener {
     /**
      * Switches the mode of the player's equipped bucket, if they are holding a valid Bottomless Bucket
      * @param p the player whose tool will be checked
-     * @param auto whether this switch is automatic (when player fills/empties bucket)
      */
     public static ItemStack switchBucket(Player p) {
+        Configuration config = BottomlessBuckets.plugin.getConfig();
+
         // get mode and type of the bucket
         // TODO: Configurable bucket lore lines
         // get player's equipped item
@@ -51,13 +54,12 @@ public class BucketSwitchListener implements Listener {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return null;
         // check item name
-        if (!meta.getDisplayName().equals(BucketUseListener.BUCKET_DISPLAY_NAME)) return null;
+        if (!meta.getDisplayName().equals(BottomlessBuckets.getColouredConfigValue("bucket-item.name"))) return null;
         // do not allow swapping stacked buckets
         if (item.getAmount() != 1) {
             p.sendMessage(Lang.STACKED_CHANGE_MODE.getConfigValue(null));
             return null;
         }
-
         // get item lore
         List<String> lore = meta.getLore();
         if (lore == null || lore.size() == 0) return null;
@@ -66,22 +68,29 @@ public class BucketSwitchListener implements Listener {
         int modeLine = -1;
         Material bucketType = null;
         String mode = "";
+        // get the required config values to compare this bucket to the configured bottomless bucket
+        String typeLabel = BottomlessBuckets.getColouredConfigValue("bucket-item.lore.type.label");
+        String typeWater = BottomlessBuckets.getColouredConfigValue("bucket-item.lore.type.water");
+        String typeLava = BottomlessBuckets.getColouredConfigValue("bucket-item.lore.type.lava");
+        String modeLabel = BottomlessBuckets.getColouredConfigValue("bucket-item.lore.mode.label");
+        String modeFill = BottomlessBuckets.getColouredConfigValue("bucket-item.lore.mode.fill");
+        String modePlace = BottomlessBuckets.getColouredConfigValue("bucket-item.lore.mode.place");
         for (int i = 0; i < lore.size(); i++) {
             String s = lore.get(i);
             // get the bucket type
-            if (s.contains("Type")) {
-                if (s.contains("Water")) {
+            if (s.contains(typeLabel)) {
+                if (s.contains(typeWater)) {
                     bucketType = Material.WATER_BUCKET;
-                } else if (s.contains("Lava")) {
+                } else if (s.contains(typeLava)) {
                     bucketType = Material.LAVA_BUCKET;
                 } else return null;
             }
             // get the bucket mode
-            if (s.contains("Mode")) {
+            if (s.contains(modeLabel)) {
                 modeLine = i;
-                if (s.contains("Place")) {
+                if (s.contains(modePlace)) {
                     mode = "place";
-                } else if (s.contains("Fill")) {
+                } else if (s.contains(modeFill)) {
                     mode = "fill";
                 } else return null;
             }
@@ -91,14 +100,20 @@ public class BucketSwitchListener implements Listener {
         if (bucketType == null) return null;
 
         // switch bucket item depending on mode
+        // get the formatting for the mode lore from the config
+        String configLore = ChatColor.translateAlternateColorCodes('&',
+                (String) BottomlessBuckets.plugin.getConfig().getList("bucket-item.lore.lines").get(modeLine))
+                .replace("%mode-label%", modeLabel);
         if (mode.equals("place")) {
             p.sendMessage(Lang.SWITCH_FILL.getConfigValue(null));
             item.setType(Material.BUCKET);
-            lore.set(modeLine, ChatColor.translateAlternateColorCodes('&', "&7Mode: &fFill"));
+            configLore = configLore.replace("%mode-value%", modeFill);
+            lore.set(modeLine, configLore);
         } else {
             item.setType(bucketType);
             p.sendMessage(Lang.SWITCH_PLACE.getConfigValue(null));
-            lore.set(modeLine, ChatColor.translateAlternateColorCodes('&', "&7Mode: &fPlace"));
+            configLore = configLore.replace("%mode-value%", modePlace);
+            lore.set(modeLine, configLore);
         }
 
         // TODO configurable sound
