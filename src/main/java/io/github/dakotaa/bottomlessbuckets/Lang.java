@@ -1,6 +1,5 @@
 package io.github.dakotaa.bottomlessbuckets;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -8,22 +7,12 @@ import org.bukkit.configuration.file.FileConfiguration;
  * Lang class by clip (https://www.spigotmc.org/threads/language-configuration.33079/)
  */
 public enum Lang {
-    /**
-     * No permission
-     */
     NO_PERMISSION("no_permission", "&4Permission denied (&f{0} &4required)"),
-    /**
-     * player not online
-     */
-    PLAYER_NOT_ONLINE("player_not_online", "&f{0} &cis not online!"),
-    /**
-     * player trying to swap a stacked bucket
-     */
     STACKED_CHANGE_MODE("stacked_change_mode", "&cYou cannot change bucket modes with a stacked bottomless bucket!"),
     STACKED_PLACE("stacked_place", "&cYou cannot place stacked bottomless buckets!"),
     STACKED_FILL("stacked_fill", "&cYou cannot fill stacked bottomless buckets!"),
-    BUCKET_EMPTY("bucket_empty", "&cBucket empty!"),
-    BUCKET_FULL("bucket_full", "&cBucket full!"),
+    BUCKET_EMPTY("bucket_empty", "&cBucket empty! Press F to switch bucket mode."),
+    BUCKET_FULL("bucket_full", "&cBucket full! Press F to switch bucket mode."),
     WRONG_TYPE("wrong_bucket_type", "&cYou cannot fill this bucket with that type of liquid!"),
     SWITCH_FILL("switch_fill_mode", "&7Your Bottomless Bucket is now in &e&lfill &7mode."),
     SWITCH_PLACE("switch_place_mode", "&7Your Bottomless Bucket is now in &a&lplace &7mode.")

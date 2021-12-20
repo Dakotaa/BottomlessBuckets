@@ -22,6 +22,7 @@ public class BottomlessBuckets extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new BucketUseListener(), this);
         getServer().getPluginManager().registerEvents(new BucketSwitchListener(), this);
+        getServer().getPluginManager().registerEvents(new DispenserBlock(), this);
 
         langFile.createNewFile("Loading BottomlessBuckets lang.yml", "BottomlessBuckets lang file");
         loadLang();
