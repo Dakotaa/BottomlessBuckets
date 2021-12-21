@@ -44,10 +44,10 @@ public class BucketUseListener implements Listener {
      * @param e a PlayerBucketEvent
      */
     public void updateBucket(ItemStack item, String mode, Player p, PlayerBucketEvent e) {
+        // check if the item is a bottomless bucket
+        if (!Util.isBottomlessBucket(item)) return;
         ItemMeta meta = item.getItemMeta();
         if (meta != null && meta.hasDisplayName()) {
-            if (!meta.getDisplayName().equals(BottomlessBuckets.getColouredConfigValue("bucket-item.name"))) return;
-
             // player attempting to fill/empty a stacked bucket
             if (item.getAmount() != 1) {
                 if (mode.equals("fill")) {

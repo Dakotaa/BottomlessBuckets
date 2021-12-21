@@ -16,7 +16,14 @@ public enum Lang {
     BUCKET_FULL("bucket_full", "&cBucket full! Press F to switch bucket mode."),
     WRONG_TYPE("wrong_bucket_type", "&cYou cannot fill this bucket with that type of liquid!"),
     SWITCH_FILL("switch_fill_mode", "&7Your Bottomless Bucket is now in &e&lfill &7mode."),
-    SWITCH_PLACE("switch_place_mode", "&7Your Bottomless Bucket is now in &a&lplace &7mode.")
+    SWITCH_PLACE("switch_place_mode", "&7Your Bottomless Bucket is now in &a&lplace &7mode."),
+    COMMAND_PLAYER_ONLY("command_player_only", "&cThis command can only be used by players!"),
+    COMMAND_INVALID_TYPE("command_invalid_type", "&cInvalid bucket type (use &c&owater &cor &c&olava&c)"),
+    COMMAND_BUCKET_GIVEN("command_bucket_given", "&aSuccessfully gave Bottomless {0} Bucket with capacity {1} to {3}."),
+    COMMAND_BUCKET_RECEIVED("command_bucket_received", "&aYou received a Bottomless {0} Bucket with capacity {1}."),
+    COMMAND_BUCKETS_RECEIVED("command_buckets_received", "&aYou received {0} Bottomless {1} Buckets with capacity {2}."),
+    COMMAND_INVALID_QUANTITY("command_invalid_quantity", "&cInvalid quantity!"),
+    COMMAND_PLAYER_OFFLINE("command_player_offline", "&cThat player is not online!")
     ;
 
     private String path, def;

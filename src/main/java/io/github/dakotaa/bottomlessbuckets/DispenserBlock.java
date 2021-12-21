@@ -19,14 +19,14 @@ public class DispenserBlock implements Listener {
     @EventHandler
     public void onBottomlessBucketDispense(BlockDispenseEvent e) {
         ItemStack item = e.getItem();
-        if (isBottomlessBucket(item)) e.setCancelled(true);
+        if (Util.isBottomlessBucket(item)) e.setCancelled(true);
     }
 
     @EventHandler
     public void hopperToDispener(InventoryMoveItemEvent e) {
         ItemStack item = e.getItem();
         if (e.getDestination().getType() == InventoryType.DISPENSER) {
-            if (isBottomlessBucket(item)) e.setCancelled(true);
+            if (Util.isBottomlessBucket(item)) e.setCancelled(true);
         }
     }
 
@@ -38,7 +38,7 @@ public class DispenserBlock implements Listener {
                 if (clicked == null) return;
                 if (clicked.equals(e.getWhoClicked().getInventory())) {
                     ItemStack clickedOn = e.getCurrentItem();
-                    if (isBottomlessBucket(clickedOn)) e.setCancelled(true);
+                    if (Util.isBottomlessBucket(clickedOn)) e.setCancelled(true);
                 }
             }
         }
@@ -50,7 +50,7 @@ public class DispenserBlock implements Listener {
             Inventory clicked = e.getClickedInventory();
             if (clicked != e.getWhoClicked().getInventory()) {
                 ItemStack onCursor = e.getCursor();
-                if (isBottomlessBucket(onCursor)) e.setCancelled(true);
+                if (Util.isBottomlessBucket(onCursor)) e.setCancelled(true);
             }
         }
     }
@@ -59,7 +59,7 @@ public class DispenserBlock implements Listener {
     public void onInventoryDrag(InventoryDragEvent e) {
         if (e.getInventory().getType() == InventoryType.DISPENSER) {
             ItemStack dragged = e.getOldCursor();
-            if (isBottomlessBucket(dragged)) e.setCancelled(true);
+            if (Util.isBottomlessBucket(dragged)) e.setCancelled(true);
         }
     }
 
@@ -68,15 +68,8 @@ public class DispenserBlock implements Listener {
         if (e.getInventory().getType() == org.bukkit.event.inventory.InventoryType.DISPENSER) {
             if (e.getAction().name().contains("HOTBAR")) {
                 ItemStack item = e.getCurrentItem();
-                if (isBottomlessBucket(item)) e.setCancelled(true);
+                if (Util.isBottomlessBucket(item)) e.setCancelled(true);
             }
         }
-    }
-
-    public boolean isBottomlessBucket(ItemStack item) {
-        if (item == null) return false;
-        if (!(Arrays.asList(Material.WATER_BUCKET, Material.LAVA_BUCKET, Material.BUCKET).contains(item.getType()))) return false;
-        if (item.getItemMeta() == null) return false;
-        return (item.getItemMeta().getDisplayName().equals(BottomlessBuckets.getColouredConfigValue("bucket-item.name")));
     }
 }

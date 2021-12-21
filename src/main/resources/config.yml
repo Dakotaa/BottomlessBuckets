@@ -4,12 +4,13 @@ actionBarMessage: true
 autoSwitchMode: true
 # settings for the bottomless bucket item
 bucket-item:
-  name: '&bBottomless Bucket'
+  name-water: '&bBottomless Bucket'
+  name-lava: '&6Bottomless Bucket'
   lore:
     # formatting for the bucket type
     type:
       label: '&7Type'
-      water: '&1Water'
+      water: '&bWater'
       lava: '&6Lava'
     # formatting for the amount of liquid in the bucket
     amount:
@@ -33,7 +34,7 @@ bucket-item:
       - '%amount-label%: &f%amount-value%'
       - '%capacity-label%: &f%capacity-value%'
       - ''
-      - '%mode-label%: &f%mode-value%'
+      - '%mode-label%: %mode-value%'
 sounds:
   # whether to play the sound effect when the player switches bucket modes (item frame pop sound)
   enableModeSwitchSound: true

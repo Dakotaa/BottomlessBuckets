@@ -23,13 +23,11 @@ public class BucketSwitchListener implements Listener {
         // check if the item being switched is a bottomless bucket
         ItemStack item = p.getInventory().getItemInMainHand();
         Material type = item.getType();
-        // check for bucket type
-        if (type != Material.BUCKET && type != Material.WATER_BUCKET && type != Material.LAVA_BUCKET) return;
+        // check if the item is a bottomless bucket
+        if (!Util.isBottomlessBucket(item)) return;
         // get item meta
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
-        // check item name against configured value
-        if (!meta.getDisplayName().equals(BottomlessBuckets.getColouredConfigValue("bucket-item.name"))) return;
 
         e.setCancelled(true);
 
@@ -47,18 +45,15 @@ public class BucketSwitchListener implements Listener {
     public static ItemStack switchBucket(Player p) {
         Configuration config = BottomlessBuckets.plugin.getConfig();
 
-        // get mode and type of the bucket
-        // TODO: Configurable bucket lore lines
         // get player's equipped item
         ItemStack item = p.getInventory().getItemInMainHand();
         Material type = item.getType();
-        // check for bucket type
-        if (type != Material.BUCKET && type != Material.WATER_BUCKET && type != Material.LAVA_BUCKET) return null;
-        // get item meta
+        // check if the item is a bottomless bucket
+        if (!Util.isBottomlessBucket(item)) return null;
+
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return null;
-        // check item name
-        if (!meta.getDisplayName().equals(BottomlessBuckets.getColouredConfigValue("bucket-item.name"))) return null;
+
         // do not allow swapping stacked buckets
         if (item.getAmount() != 1) {
             p.sendMessage(Lang.STACKED_CHANGE_MODE.getConfigValue(null));
