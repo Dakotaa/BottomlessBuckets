@@ -3,6 +3,7 @@ package io.github.dakotaa.bottomlessbuckets;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
@@ -14,6 +15,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DispenserBlock implements Listener {
+
+    @EventHandler
+    public void onBottomlessBucketDispense(BlockDispenseEvent e) {
+        ItemStack item = e.getItem();
+        if (isBottomlessBucket(item)) e.setCancelled(true);
+    }
 
     @EventHandler
     public void hopperToDispener(InventoryMoveItemEvent e) {
