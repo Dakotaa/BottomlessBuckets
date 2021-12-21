@@ -28,12 +28,16 @@ public class BucketSwitchListener implements Listener {
         // get item meta
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
-        // check item name
-        if (!meta.getDisplayName().equals(BucketUseListener.BUCKET_DISPLAY_NAME)) return;
+        // check item name against configured value
+        if (!meta.getDisplayName().equals(BottomlessBuckets.getColouredConfigValue("bucket-item.name"))) return;
 
         e.setCancelled(true);
 
-        switchBucket(p);
+        if (p.hasPermission("bottomlessbuckets.use")) {
+            switchBucket(p);
+        } else {
+            p.sendMessage(Lang.NO_PERMISSION_USE_BUCKETS.getConfigValue(null));
+        }
     }
 
     /**

@@ -17,13 +17,15 @@ import java.util.List;
 
 public class BucketUseListener implements Listener {
 
-    public static final String BUCKET_DISPLAY_NAME = ChatColor.AQUA + "Bottomless Bucket";
-
     @EventHandler
     public void onBucketFillEvent(PlayerBucketFillEvent e) {
         Player p = e.getPlayer();
-        ItemStack item = p.getInventory().getItemInMainHand();
-        updateBucket(item, "fill", p, e);
+        if (p.hasPermission("bottomlessbuckets.use")) {
+            ItemStack item = p.getInventory().getItemInMainHand();
+            updateBucket(item, "fill", p, e);
+        } else {
+            p.sendMessage(Lang.NO_PERMISSION_USE_BUCKETS.getConfigValue(null));
+        }
     }
 
     @EventHandler

@@ -1,3 +1,20 @@
 name: BottomlessBuckets
 version: 1.0
 main: io.github.dakotaa.bottomlessbuckets.BottomlessBuckets
+commands:
+  buckets:
+    description: BottomlessBuckets admin command
+    usage: /buckets <give/get/reload>
+    permission: bottomlessbuckets.admin
+permissions:
+  bottomlessbuckets.*:
+      description: Gives access to all Bottomless Buckets commands.
+      children:
+          bottomlessbuckets.admin: true
+          bottomlessbuckets.use: true
+  bottomlessbuckets.admin:
+    description: Gives access to all Bottomless Buckets commands.
+    default: op
+  bottomlessbuckets.use:
+    description: Gives access to use Bottomless Buckets and switch bucket modes.
+    default: true
