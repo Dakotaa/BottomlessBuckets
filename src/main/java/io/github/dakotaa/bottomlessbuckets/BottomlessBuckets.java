@@ -2,12 +2,9 @@ package io.github.dakotaa.bottomlessbuckets;
 
 import io.github.dakotaa.bottomlessbuckets.config.ConfigWrapper;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.Objects;
 
 public class BottomlessBuckets extends JavaPlugin {
     public static BottomlessBuckets plugin;
@@ -22,7 +19,7 @@ public class BottomlessBuckets extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new BucketUseListener(), this);
         getServer().getPluginManager().registerEvents(new BucketSwitchListener(), this);
-        getServer().getPluginManager().registerEvents(new DispenserBlock(), this);
+        getServer().getPluginManager().registerEvents(new ContainerBlock(), this);
 
         this.getCommand("buckets").setExecutor(new CommandBuckets());
 
