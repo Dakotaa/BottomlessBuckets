@@ -4,7 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 /**
- * Lang class by clip (https://www.spigotmc.org/threads/language-configuration.33079/)
+ * Lang class based on clip's (https://www.spigotmc.org/threads/language-configuration.33079/)
  */
 public enum Lang {
     NO_PERMISSION("no_permission", "&4Permission denied (&f%permission% &4required)"),
@@ -26,7 +26,8 @@ public enum Lang {
     COMMAND_PLAYER_OFFLINE("command_player_offline", "&cThat player is not online!")
     ;
 
-    private String path, def;
+    private final String path;
+    private final String def;
     private static FileConfiguration LANG;
 
     Lang(final String path, final String start) {
