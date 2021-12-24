@@ -12,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
-import java.util.Objects;
 
 public class BucketSwitchListener implements Listener {
 
@@ -34,7 +33,7 @@ public class BucketSwitchListener implements Listener {
         if (p.hasPermission("bottomlessbuckets.use")) {
             switchBucket(p);
         } else {
-            p.sendMessage(Lang.NO_PERMISSION_USE_BUCKETS.getConfigValue(null));
+            p.sendMessage(Lang.NO_PERMISSION_USE_BUCKETS.getConfigValue());
         }
     }
 
@@ -56,7 +55,7 @@ public class BucketSwitchListener implements Listener {
 
         // do not allow swapping stacked buckets
         if (item.getAmount() != 1) {
-            p.sendMessage(Lang.STACKED_CHANGE_MODE.getConfigValue(null));
+            p.sendMessage(Lang.STACKED_CHANGE_MODE.getConfigValue());
             return null;
         }
         // get item lore
@@ -104,16 +103,15 @@ public class BucketSwitchListener implements Listener {
                 (String) BottomlessBuckets.plugin.getConfig().getList("bucket-item.lore.lines").get(modeLine))
                 .replace("%mode-label%", modeLabel);
         if (mode.equals("place")) {
-            p.sendMessage(Lang.SWITCH_FILL.getConfigValue(null));
+            p.sendMessage(Lang.SWITCH_FILL.getConfigValue());
             item.setType(Material.BUCKET);
             configLore = configLore.replace("%mode-value%", modeFill);
-            lore.set(modeLine, configLore);
         } else {
             item.setType(bucketType);
-            p.sendMessage(Lang.SWITCH_PLACE.getConfigValue(null));
+            p.sendMessage(Lang.SWITCH_PLACE.getConfigValue());
             configLore = configLore.replace("%mode-value%", modePlace);
-            lore.set(modeLine, configLore);
         }
+        lore.set(modeLine, configLore);
 
         // TODO configurable sound
         if (BottomlessBuckets.plugin.getConfig().getBoolean("sounds.enableModeSwitchSound")) {

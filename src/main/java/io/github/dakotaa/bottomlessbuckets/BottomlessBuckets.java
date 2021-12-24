@@ -42,7 +42,7 @@ public class BottomlessBuckets extends JavaPlugin {
     }
 
     public void sendNoPermsMsg(Player p, String permNeeded) {
-        p.sendMessage(Lang.NO_PERMISSION.getConfigValue(new String[] { permNeeded }));
+        p.sendMessage(Lang.NO_PERMISSION.getConfigValue(new String[] {"%permission%"}, new String[] {permNeeded}));
     }
 
     /**

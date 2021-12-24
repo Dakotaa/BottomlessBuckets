@@ -21,12 +21,12 @@ public class CommandBuckets implements CommandExecutor {
             if (args[0].equalsIgnoreCase("get")) {
                 if (args.length >= 3) {
                     if (!(sender instanceof Player)) {
-                        sender.sendMessage(Lang.COMMAND_PLAYER_ONLY.getConfigValue(null));
+                        sender.sendMessage(Lang.COMMAND_PLAYER_ONLY.getConfigValue());
                         return true;
                     }
                     Player player = (Player) sender;
                     if (!(args[1].equalsIgnoreCase("water") || args[1].equalsIgnoreCase("lava"))) {
-                        player.sendMessage(Lang.COMMAND_INVALID_TYPE.getConfigValue(null));
+                        player.sendMessage(Lang.COMMAND_INVALID_TYPE.getConfigValue());
                         return true;
                     }
                     if (args.length == 3) {
@@ -48,11 +48,11 @@ public class CommandBuckets implements CommandExecutor {
                 if (args.length >= 4) {
                     Player player = Bukkit.getPlayer(args[1]);
                     if (player == null) {
-                        sender.sendMessage(Lang.COMMAND_PLAYER_OFFLINE.getConfigValue(null));
+                        sender.sendMessage(Lang.COMMAND_PLAYER_OFFLINE.getConfigValue());
                         return true;
                     }
                     if (!(args[2].equalsIgnoreCase("water") || args[2].equalsIgnoreCase("lava"))) {
-                        sender.sendMessage(Lang.COMMAND_INVALID_TYPE.getConfigValue(null));
+                        sender.sendMessage(Lang.COMMAND_INVALID_TYPE.getConfigValue());
                         return true;
                     }
                     if (args.length == 4) {
@@ -76,7 +76,7 @@ public class CommandBuckets implements CommandExecutor {
 
     private void giveBucketItem(CommandSender sender, Player p, String type, int capacity, int quantity) {
         if (capacity <= 0) {
-            sender.sendMessage(Lang.COMMAND_INVALID_QUANTITY.getConfigValue(null));
+            sender.sendMessage(Lang.COMMAND_INVALID_QUANTITY.getConfigValue());
             return;
         }
         ItemStack bucket = new ItemStack(Material.BUCKET, quantity);
@@ -115,12 +115,15 @@ public class CommandBuckets implements CommandExecutor {
 
         if (!sender.equals(p)) {
             sender.sendMessage(Lang.COMMAND_BUCKET_GIVEN.getConfigValue(
+                    new String[] {"%type%", "%capacity%", "%player%"},
                     new String[] {type, String.valueOf(capacity), p.getName()}));
         }
 
         if (quantity == 1) p.sendMessage(Lang.COMMAND_BUCKET_RECEIVED.getConfigValue(
+                new String[] {"%type%", "%capacity%"},
                 new String[] {type, String.valueOf(capacity)}));
         else p.sendMessage(Lang.COMMAND_BUCKETS_RECEIVED.getConfigValue(
+                new String[] {"%type%", "%quantity%", "%player%"},
                 new String[] {type, String.valueOf(quantity), String.valueOf(capacity)}));
     }
 }

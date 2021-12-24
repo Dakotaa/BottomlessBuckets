@@ -7,7 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
  * Lang class by clip (https://www.spigotmc.org/threads/language-configuration.33079/)
  */
 public enum Lang {
-    NO_PERMISSION("no_permission", "&4Permission denied (&f{0} &4required)"),
+    NO_PERMISSION("no_permission", "&4Permission denied (&f%permission% &4required)"),
     NO_PERMISSION_USE_BUCKETS("no_permission_use_buckets", "&4You do not have permission to use Bottomless Buckets!"),
     STACKED_CHANGE_MODE("stacked_change_mode", "&cYou cannot change bucket modes with a stacked bottomless bucket!"),
     STACKED_PLACE("stacked_place", "&cYou cannot place stacked bottomless buckets!"),
@@ -19,9 +19,9 @@ public enum Lang {
     SWITCH_PLACE("switch_place_mode", "&7Your Bottomless Bucket is now in &a&lplace &7mode."),
     COMMAND_PLAYER_ONLY("command_player_only", "&cThis command can only be used by players!"),
     COMMAND_INVALID_TYPE("command_invalid_type", "&cInvalid bucket type (use &c&owater &cor &c&olava&c)"),
-    COMMAND_BUCKET_GIVEN("command_bucket_given", "&aSuccessfully gave Bottomless {0} Bucket with capacity {1} to {3}."),
-    COMMAND_BUCKET_RECEIVED("command_bucket_received", "&aYou received a Bottomless {0} Bucket with capacity {1}."),
-    COMMAND_BUCKETS_RECEIVED("command_buckets_received", "&aYou received {0} Bottomless {1} Buckets with capacity {2}."),
+    COMMAND_BUCKET_GIVEN("command_bucket_given", "&aSuccessfully gave Bottomless %type% Bucket with capacity %capacity% to %player%."),
+    COMMAND_BUCKET_RECEIVED("command_bucket_received", "&aYou received a Bottomless %type% Bucket with capacity %capacity%."),
+    COMMAND_BUCKETS_RECEIVED("command_buckets_received", "&aYou received %quantity% Bottomless %type% Buckets with capacity %capacity%."),
     COMMAND_INVALID_QUANTITY("command_invalid_quantity", "&cInvalid quantity!"),
     COMMAND_PLAYER_OFFLINE("command_player_offline", "&cThat player is not online!")
     ;
@@ -46,21 +46,21 @@ public enum Lang {
         return this.path;
     }
 
-    public String getConfigValue(final String[] args) {
+    public String getConfigValue(final String[] args, final String[] values) {
+        if (args.length != values.length) return "";
+
         String value = ChatColor.translateAlternateColorCodes('&',
                 LANG.getString(this.path, this.def));
 
-        if (args == null)
-            return value;
-        else {
-            if (args.length == 0)
-                return value;
-
-            for (int i = 0; i < args.length; i++) {
-                value = value.replace("{" + i + "}", args[i]);
-            }
+        for (int i = 0; i < args.length; i++) {
+            value = value.replace(args[i], values[i]);
         }
 
         return value;
+    }
+
+    public String getConfigValue() {
+        return ChatColor.translateAlternateColorCodes('&',
+                LANG.getString(this.path, this.def));
     }
 }
