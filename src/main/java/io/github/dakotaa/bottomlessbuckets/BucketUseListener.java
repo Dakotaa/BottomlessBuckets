@@ -24,7 +24,7 @@ public class BucketUseListener implements Listener {
             ItemStack item = p.getInventory().getItemInMainHand();
             updateBucket(item, "fill", p, e);
         } else {
-            p.sendMessage(Lang.NO_PERMISSION_USE_BUCKETS.getConfigValue());
+            Util.message(p, true, Lang.NO_PERMISSION_USE_BUCKETS.getConfigValue());
         }
     }
 
@@ -51,9 +51,9 @@ public class BucketUseListener implements Listener {
             // player attempting to fill/empty a stacked bucket
             if (item.getAmount() != 1) {
                 if (mode.equals("fill")) {
-                    p.sendMessage(Lang.STACKED_FILL.getConfigValue());
+                    Util.message(p, true, Lang.STACKED_FILL.getConfigValue());
                 } else {
-                    p.sendMessage(Lang.STACKED_PLACE.getConfigValue());
+                    Util.message(p, true, Lang.STACKED_PLACE.getConfigValue());
                 }
                 e.setCancelled(true);
                 return;
@@ -101,7 +101,7 @@ public class BucketUseListener implements Listener {
             // ensure the liquid type matches the bucket type when filling
             if (mode.equals("fill")) {
                 if (!e.getBlock().getType().equals(type)) {
-                    p.sendMessage(Lang.WRONG_TYPE.getConfigValue());
+                    Util.message(p, true, Lang.WRONG_TYPE.getConfigValue());
                     e.setCancelled(true);
                     return;
                 }
@@ -114,13 +114,13 @@ public class BucketUseListener implements Listener {
             if (mode.equals("fill")) {
                 if (amount >= capacity) {
                     e.setCancelled(true);
-                    p.sendMessage(Lang.BUCKET_FULL.getConfigValue());
+                    Util.message(p, true, Lang.BUCKET_FULL.getConfigValue());
                     return;
                 }
             } else {
                 if (amount <= 0) {
                     e.setCancelled(true);
-                    p.sendMessage(Lang.BUCKET_EMPTY.getConfigValue());
+                    Util.message(p, true, Lang.BUCKET_EMPTY.getConfigValue());
                     return;
                 }
             }

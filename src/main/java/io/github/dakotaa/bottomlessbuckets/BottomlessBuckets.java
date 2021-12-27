@@ -15,7 +15,7 @@ public class BottomlessBuckets extends JavaPlugin {
     public void onEnable() {
         plugin = this;
 
-        saveDefaultConfig();
+        reloadConfig();
 
         getServer().getPluginManager().registerEvents(new BucketUseListener(), this);
         getServer().getPluginManager().registerEvents(new BucketSwitchListener(), this);
@@ -42,7 +42,7 @@ public class BottomlessBuckets extends JavaPlugin {
     }
 
     public void sendNoPermsMsg(Player p, String permNeeded) {
-        p.sendMessage(Lang.NO_PERMISSION.getConfigValue(new String[] {"%permission%"}, new String[] {permNeeded}));
+        Util.message(p, true, Lang.NO_PERMISSION.getConfigValue(new String[] {"%permission%"}, new String[] {permNeeded}));
     }
 
     /**
@@ -60,6 +60,26 @@ public class BottomlessBuckets extends JavaPlugin {
             BottomlessBuckets.plugin.getLogger().info("Failed to retrieve config value: " + path);
         }
         return value;
+    }
+
+
+    public void reload() {
+        reloadConfig();
+
+        langFile.createNewFile("Loading BottomlessBuckets lang.yml", "BottomlessBuckets lang file");
+        loadLang();
+
+        getLogger().info("Reloaded successfully.");
+    }
+
+    @Override
+    public void reloadConfig() {
+        super.reloadConfig();
+
+        saveDefaultConfig();
+        config = getConfig();
+        config.options().copyDefaults(true);
+        saveConfig();
     }
 
     @Override

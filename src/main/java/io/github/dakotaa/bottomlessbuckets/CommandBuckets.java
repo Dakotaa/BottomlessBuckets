@@ -16,17 +16,27 @@ public class CommandBuckets implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (command.getName().equalsIgnoreCase("buckets")) {
-
+            // send the help list
+            if (args.length == 0) {
+                sendHelp(sender);
+                return true;
+            }
+            // reload command
+            if (args[0].equalsIgnoreCase("reload")) {
+                BottomlessBuckets.plugin.reload();
+                Util.message(sender, true, "&aPlugin reloaded.");
+                return true;
+            }
             // /buckets get <water/lava> <capacity> <amount>
             if (args[0].equalsIgnoreCase("get")) {
                 if (args.length >= 3) {
                     if (!(sender instanceof Player)) {
-                        sender.sendMessage(Lang.COMMAND_PLAYER_ONLY.getConfigValue());
+                        Util.message(sender, true, Lang.COMMAND_PLAYER_ONLY.getConfigValue());
                         return true;
                     }
                     Player player = (Player) sender;
                     if (!(args[1].equalsIgnoreCase("water") || args[1].equalsIgnoreCase("lava"))) {
-                        player.sendMessage(Lang.COMMAND_INVALID_TYPE.getConfigValue());
+                        Util.message(sender, true, Lang.COMMAND_INVALID_TYPE.getConfigValue());
                         return true;
                     }
                     if (args.length == 3) {
@@ -42,17 +52,16 @@ public class CommandBuckets implements CommandExecutor {
                     }
                 }
             }
-
             // /buckets give <player> <water/lava> <capacity> <amount>
             if (args[0].equalsIgnoreCase("give")) {
                 if (args.length >= 4) {
                     Player player = Bukkit.getPlayer(args[1]);
                     if (player == null) {
-                        sender.sendMessage(Lang.COMMAND_PLAYER_OFFLINE.getConfigValue());
+                        Util.message(sender, true, Lang.COMMAND_PLAYER_OFFLINE.getConfigValue());
                         return true;
                     }
                     if (!(args[2].equalsIgnoreCase("water") || args[2].equalsIgnoreCase("lava"))) {
-                        sender.sendMessage(Lang.COMMAND_INVALID_TYPE.getConfigValue());
+                        Util.message(sender, true, Lang.COMMAND_INVALID_TYPE.getConfigValue());
                         return true;
                     }
                     if (args.length == 4) {
@@ -68,15 +77,15 @@ public class CommandBuckets implements CommandExecutor {
                     }
                 }
             }
-
         }
 
-        return false;
+        sendHelp((Player) sender);
+        return true;
     }
 
     private void giveBucketItem(CommandSender sender, Player p, String type, int capacity, int quantity) {
         if (capacity <= 0) {
-            sender.sendMessage(Lang.COMMAND_INVALID_QUANTITY.getConfigValue());
+            Util.message(sender, true, Lang.COMMAND_INVALID_QUANTITY.getConfigValue());
             return;
         }
         ItemStack bucket = new ItemStack(Material.BUCKET, quantity);
@@ -114,16 +123,25 @@ public class CommandBuckets implements CommandExecutor {
         p.getInventory().addItem(bucket);
 
         if (!sender.equals(p)) {
-            sender.sendMessage(Lang.COMMAND_BUCKET_GIVEN.getConfigValue(
+            Util.message((Player) sender, true, Lang.COMMAND_BUCKET_GIVEN.getConfigValue(
                     new String[] {"%type%", "%capacity%", "%player%"},
                     new String[] {type, String.valueOf(capacity), p.getName()}));
         }
 
-        if (quantity == 1) p.sendMessage(Lang.COMMAND_BUCKET_RECEIVED.getConfigValue(
+        if (quantity == 1) Util.message(p, true, Lang.COMMAND_BUCKET_RECEIVED.getConfigValue(
                 new String[] {"%type%", "%capacity%"},
                 new String[] {type, String.valueOf(capacity)}));
-        else p.sendMessage(Lang.COMMAND_BUCKETS_RECEIVED.getConfigValue(
+        else Util.message(p, true, Lang.COMMAND_BUCKETS_RECEIVED.getConfigValue(
                 new String[] {"%type%", "%quantity%", "%player%"},
                 new String[] {type, String.valueOf(quantity), String.valueOf(capacity)}));
+    }
+
+    private void sendHelp(CommandSender p) {
+        Util.message(p, false, "&8]&8&m----------&8[ &b&lBottomless Buckets &8]&8&m----------&8[ ");
+        Util.message(p, false, "&f/buckets &7- Shows this help list");
+        Util.message(p, false, "&b/buckets get [water|lava] &b<capacity> [<quantity>] &7- Give yourself bottomless bucket(s).");
+        Util.message(p, false, "&b/buckets give <player> [water|lava] &b<capacity> [<quantity>] &7- Give a player bottomless bucket(s).");
+        Util.message(p, false, "&b/buckets reload &7- Reload the config and lang.");
+        Util.message(p, false, "&8]&8&m------------------------------------------&8[ ");
     }
 }

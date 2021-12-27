@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
  * Lang class based on clip's (https://www.spigotmc.org/threads/language-configuration.33079/)
  */
 public enum Lang {
+    PREFIX("prefix", "&b&lBottomlessBuckets &f»"),
     NO_PERMISSION("no_permission", "&4Permission denied (&f%permission% &4required)"),
     NO_PERMISSION_USE_BUCKETS("no_permission_use_buckets", "&4You do not have permission to use Bottomless Buckets!"),
     STACKED_CHANGE_MODE("stacked_change_mode", "&cYou cannot change bucket modes with a stacked bottomless bucket!"),
