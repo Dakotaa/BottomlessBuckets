@@ -25,6 +25,7 @@ public class BucketUseListener implements Listener {
             updateBucket(item, "fill", p, e);
         } else {
             Util.message(p, true, Lang.NO_PERMISSION_USE_BUCKETS.getConfigValue());
+            e.setCancelled(true);
         }
     }
 
@@ -97,6 +98,27 @@ public class BucketUseListener implements Listener {
 
             // ensure the bucket has a type
             if (type == null) return;
+
+            // check if the player is in combat and this type of bucket use should be blocked while in combat
+            if (BottomlessBuckets.plugin.usingCombatTagging()) {
+                if (Util.isInCombat(p)) {
+                    String liquid;
+                    if (type.equals(Material.WATER)) liquid = "water"; else liquid = "lava";
+                    if (mode.equals("fill")) {
+                        if (BottomlessBuckets.plugin.getConfig().getBoolean("combat-tag." + liquid + ".blockFill")) {
+                            e.setCancelled(true);
+                            Util.message(p, true, Lang.FILL_IN_COMBAT.getConfigValue());
+                            return;
+                        }
+                    } else {
+                        if (BottomlessBuckets.plugin.getConfig().getBoolean("combat-tag." + liquid + ".blockPlace")) {
+                            e.setCancelled(true);
+                            Util.message(p, true, Lang.PLACE_IN_COMBAT.getConfigValue());
+                            return;
+                        }
+                    }
+                }
+            }
 
             // ensure the liquid type matches the bucket type when filling
             if (mode.equals("fill")) {

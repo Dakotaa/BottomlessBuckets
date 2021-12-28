@@ -17,14 +17,6 @@ import java.util.Arrays;
 
 public class ContainerBlock implements Listener {
 
-    // list of containers to block
-    final InventoryType[] blockedContainers = {
-            InventoryType.DISPENSER,
-            InventoryType.FURNACE,
-            InventoryType.BLAST_FURNACE,
-            InventoryType.SMOKER
-    };
-
     @EventHandler
     public void onBottomlessBucketDispense(BlockDispenseEvent e) {
         ItemStack item = e.getItem();
@@ -34,14 +26,14 @@ public class ContainerBlock implements Listener {
     @EventHandler
     public void hopperToDispener(InventoryMoveItemEvent e) {
         ItemStack item = e.getItem();
-        if (Arrays.asList(blockedContainers).contains(e.getDestination().getType())) {
+        if (Arrays.asList(BottomlessBuckets.blockedContainers).contains(e.getDestination().getType())) {
             if (Util.isBottomlessBucket(item)) e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onShiftInventoryClick(InventoryClickEvent e) {
-        if (Arrays.asList(blockedContainers).contains(e.getInventory().getType())) {
+        if (Arrays.asList(BottomlessBuckets.blockedContainers).contains(e.getInventory().getType())) {
             if (e.getClick().isShiftClick()) {
                 Inventory clicked = e.getClickedInventory();
                 if (clicked == null) return;
@@ -55,7 +47,7 @@ public class ContainerBlock implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        if (Arrays.asList(blockedContainers).contains(e.getInventory().getType())) {
+        if (Arrays.asList(BottomlessBuckets.blockedContainers).contains(e.getInventory().getType())) {
             Inventory clicked = e.getClickedInventory();
             if (clicked != e.getWhoClicked().getInventory()) {
                 ItemStack onCursor = e.getCursor();
@@ -66,7 +58,7 @@ public class ContainerBlock implements Listener {
 
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent e) {
-        if (Arrays.asList(blockedContainers).contains(e.getInventory().getType())) {
+        if (Arrays.asList(BottomlessBuckets.blockedContainers).contains(e.getInventory().getType())) {
             ItemStack dragged = e.getOldCursor();
             if (Util.isBottomlessBucket(dragged)) e.setCancelled(true);
         }
@@ -74,7 +66,7 @@ public class ContainerBlock implements Listener {
 
     @EventHandler
     public void onHotbarKey(InventoryClickEvent e) {
-        if (Arrays.asList(blockedContainers).contains(e.getInventory().getType())) {
+        if (Arrays.asList(BottomlessBuckets.blockedContainers).contains(e.getInventory().getType())) {
             if (e.getAction().name().contains("HOTBAR")) {
                 ItemStack item = e.getCurrentItem();
                 if (Util.isBottomlessBucket(item)) e.setCancelled(true);

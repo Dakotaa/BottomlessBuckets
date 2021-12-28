@@ -2,6 +2,16 @@
 actionBarMessage: true
 # whether the bucket's mode should be switched automatically once the bucket is full/empty
 autoSwitchMode: true
+# settings for how bottomless buckets should work while combat tagged (requires CombatLogX)
+combat-tag:
+  # whether CombatLogX combat tagging should block bucket use
+  useCombatTagging: true
+  water:
+    blockFill: true
+    blockPlace: true
+  lava:
+    blockFill: true
+    blockPlace: true
 # settings for the bottomless bucket item
 bucket-item:
   name-water: '&bBottomless Bucket'
