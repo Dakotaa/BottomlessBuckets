@@ -21,6 +21,12 @@ public class BucketUseListener implements Listener {
     public void onBucketFillEvent(PlayerBucketFillEvent e) {
         Player p = e.getPlayer();
         if (p.hasPermission("bottomlessbuckets.use")) {
+            // check if the off-hand item is a bottomless bucket
+            if(Util.isBottomlessBucket(p.getInventory().getItemInOffHand())) {
+                Util.message(p, true, Lang.PLACE_FROM_OFFHAND.getConfigValue());
+                e.setCancelled(true);
+                return;
+            }
             ItemStack item = p.getInventory().getItemInMainHand();
             updateBucket(item, "fill", p, e);
         } else {
@@ -32,8 +38,19 @@ public class BucketUseListener implements Listener {
     @EventHandler
     public void onBucketEmptyEvent(PlayerBucketEmptyEvent e) {
         Player p = e.getPlayer();
-        ItemStack item = p.getInventory().getItemInMainHand();
-        updateBucket(item, "empty", p, e);
+        if (p.hasPermission("bottomlessbuckets.use")) {
+            // check if the off-hand item is a bottomless bucket
+            if(Util.isBottomlessBucket(p.getInventory().getItemInOffHand())) {
+                Util.message(p, true, Lang.PLACE_FROM_OFFHAND.getConfigValue());
+                e.setCancelled(true);
+                return;
+            }
+            ItemStack item = p.getInventory().getItemInMainHand();
+            updateBucket(item, "empty", p, e);
+        } else {
+            Util.message(p, true, Lang.NO_PERMISSION_USE_BUCKETS.getConfigValue());
+            e.setCancelled(true);
+        }
     }
 
     /**
@@ -45,8 +62,18 @@ public class BucketUseListener implements Listener {
      * @param e a PlayerBucketEvent
      */
     public void updateBucket(ItemStack item, String mode, Player p, PlayerBucketEvent e) {
+        boolean offhand = false;
         // check if the item is a bottomless bucket
-        if (!Util.isBottomlessBucket(item)) return;
+        if (!Util.isBottomlessBucket(item)) {
+            // main hand item isn't bottomless, check off-hand
+            item = p.getInventory().getItemInOffHand();
+            if (!Util.isBottomlessBucket(item)) {
+                return;
+            } else {
+                offhand = true;
+            }
+        }
+
         ItemMeta meta = item.getItemMeta();
         if (meta != null && meta.hasDisplayName()) {
             // player attempting to fill/empty a stacked bucket

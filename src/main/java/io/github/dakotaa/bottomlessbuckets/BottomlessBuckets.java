@@ -1,6 +1,6 @@
 package io.github.dakotaa.bottomlessbuckets;
 
-import com.SirBlobman.combatlogx.api.ICombatLogX;
+//import com.SirBlobman.combatlogx.api.ICombatLogX;
 import io.github.dakotaa.bottomlessbuckets.config.ConfigWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,7 +15,7 @@ public class BottomlessBuckets extends JavaPlugin {
     private ConfigWrapper langFile = new ConfigWrapper(this, "", "lang.yml");
     private FileConfiguration config = getConfig();
     private int version;
-    private ICombatLogX combatLogX;
+    //private ICombatLogX combatLogX;
     private boolean useCombatTagging;
 
     @Override
@@ -53,14 +53,14 @@ public class BottomlessBuckets extends JavaPlugin {
 
         useCombatTagging = getConfig().getBoolean("combat-tag.useCombatTagging");
 
-        try {
-            combatLogX = (ICombatLogX) Bukkit.getPluginManager().getPlugin("CombatLogX");
-            if (useCombatTagging) getLogger().info("CombatLogX found, bucket combat tag checking enabled.");
-        } catch (NoClassDefFoundError e) {
-            combatLogX = null;
-            if (useCombatTagging) getLogger().info("CombatLogX not found, cannot use bucket combat tag checking.");
-            useCombatTagging = false;
-        }
+//        try {
+//            combatLogX = (ICombatLogX) Bukkit.getPluginManager().getPlugin("CombatLogX");
+//            if (useCombatTagging) getLogger().info("CombatLogX found, bucket combat tag checking enabled.");
+//        } catch (NoClassDefFoundError e) {
+//            combatLogX = null;
+//            if (useCombatTagging) getLogger().info("CombatLogX not found, cannot use bucket combat tag checking.");
+//            useCombatTagging = false;
+//        }
 
         getLogger().info("Enabled");
     }
@@ -126,9 +126,9 @@ public class BottomlessBuckets extends JavaPlugin {
         return version;
     }
 
-    public ICombatLogX getCombatLogX() {
-        return this.combatLogX;
-    }
+//    public ICombatLogX getCombatLogX() {
+//        return this.combatLogX;
+//    }
 
     @Override
     public void onDisable() {

@@ -23,7 +23,11 @@ public class BucketSwitchListener implements Listener {
         ItemStack item = p.getInventory().getItemInMainHand();
         Material type = item.getType();
         // check if the item is a bottomless bucket
-        if (!Util.isBottomlessBucket(item)) return;
+        if (!Util.isBottomlessBucket(item)) {
+            // main hand item isn't bottomless, check off-hand
+            item = p.getInventory().getItemInOffHand();
+            if (!Util.isBottomlessBucket(item)) return;
+        }
         // get item meta
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
@@ -43,12 +47,20 @@ public class BucketSwitchListener implements Listener {
      */
     public static ItemStack switchBucket(Player p) {
         Configuration config = BottomlessBuckets.plugin.getConfig();
-
+        boolean offhand = false;
         // get player's equipped item
         ItemStack item = p.getInventory().getItemInMainHand();
         Material type = item.getType();
         // check if the item is a bottomless bucket
-        if (!Util.isBottomlessBucket(item)) return null;
+        if (!Util.isBottomlessBucket(item)) {
+            // main hand item isn't bottomless, check off-hand
+            item = p.getInventory().getItemInOffHand();
+            if (!Util.isBottomlessBucket(item)) {
+                return null;
+            } else {
+                offhand = true;
+            }
+        }
 
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return null;
@@ -120,8 +132,12 @@ public class BucketSwitchListener implements Listener {
         // update the item lore and give the item to the player
         meta.setLore(lore);
         item.setItemMeta(meta);
-        p.getInventory().setItemInMainHand(item);
 
+        if (offhand) {
+            p.getInventory().setItemInOffHand(item);
+        } else {
+            p.getInventory().setItemInMainHand(item);
+        }
         return item;
     }
 }

@@ -17,6 +17,7 @@ public enum Lang {
     BUCKET_FULL("bucket_full", "&cBucket full! Press F to switch bucket mode."),
     WRONG_TYPE("wrong_bucket_type", "&cYou cannot fill this bucket with that type of liquid!"),
     FILL_IN_COMBAT("fill_in_combat", "&cYou cannot fill this bucket while in combat"),
+    PLACE_FROM_OFFHAND("place_from_offhand", "&cYou cannot use Bottomless Buckets from your off-hand!"),
     PLACE_IN_COMBAT("place_in_combat", "&cYou cannot place this bucket while in combat!"),
     SWITCH_FILL("switch_fill_mode", "&7Your Bottomless Bucket is now in &e&lfill &7mode."),
     SWITCH_PLACE("switch_place_mode", "&7Your Bottomless Bucket is now in &a&lplace &7mode."),

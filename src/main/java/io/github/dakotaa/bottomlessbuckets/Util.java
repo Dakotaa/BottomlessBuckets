@@ -1,7 +1,7 @@
 package io.github.dakotaa.bottomlessbuckets;
 
-import com.SirBlobman.combatlogx.api.ICombatLogX;
-import com.SirBlobman.combatlogx.api.utility.ICombatManager;
+//import com.SirBlobman.combatlogx.api.ICombatLogX;
+//import com.SirBlobman.combatlogx.api.utility.ICombatManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -103,9 +103,10 @@ public class Util {
      */
     public static boolean isInCombat(Player player) {
         // Make sure to check that CombatLogX is enabled before using it for anything.
-        ICombatLogX plugin = BottomlessBuckets.plugin.getCombatLogX();
-        if (plugin == null) return false;
-        ICombatManager combatManager = plugin.getCombatManager();
-        return combatManager.isInCombat(player);
+        return false;
+//        ICombatLogX plugin = BottomlessBuckets.plugin.getCombatLogX();
+//        if (plugin == null) return false;
+//        ICombatManager combatManager = plugin.getCombatManager();
+//        return combatManager.isInCombat(player);
     }
 }
